@@ -57,7 +57,8 @@ Example
 		},		
 		
 	));
+	?>
+	
 
 I'll be adding more documentation and examples later.	
 	
-	?>
