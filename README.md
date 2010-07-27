@@ -11,52 +11,56 @@ For example, this is a simplified version of a Jaime Script that I use to deploy
 Example
 ---
 	<?php
-	$jaime = require('jaime.php');
 	
-	$jaime->please(array(
+		$jaime = require('jaime.php');
+	
+		$jaime->please(array(
 		
-		// it's nicer when you name your tasks descriptively
-		'duplicate the theme directory'=>function($jaime){
+			// it's nicer when you name your tasks descriptively
+			'duplicate the theme directory'=>function($jaime){
 
-			$folder = dirname(dirname(__FILE__));			
-			$destination = dirname($folder).DIRECTORY_SEPARATOR."export";
+				$folder = dirname(dirname(__FILE__));			
+				$destination = dirname($folder).DIRECTORY_SEPARATOR."export";
 
-			if (!is_dir($destination)) {
-				mkdir($destination,0777,true);
-			}
+				if (!is_dir($destination)) {
+					mkdir($destination,0777,true);
+				}
 			
-			// this is a shell command
-			exec("cp -R -f $folder $destination");
+				// this is a shell command
+				exec("cp -R -f $folder $destination");
 
-			// remember is a handy function to pass variables between 
-			// tasks without resorting to the globl scope
-			$jaime->remember('build',$destination."/padpressed");			
-		},
+				// remember is a handy function to pass variables between 
+				// tasks without resorting to the globl scope
+				$jaime->remember('build',$destination);			
+			},
 		
-		'remove development stuff'=>function($jaime){
+			'remove development stuff'=>function($jaime){
 			
-			// we retrieve values from Jaime's memory.
-			$buildDir = $jaime->remember('build');
-			chdir($buildDir);
-			exec('rm -rf .git*');
-			exec('rm -rf .sass-cache');		
+				// we retrieve values from Jaime's memory.
+				$buildDir = $jaime->remember('build');
+				chdir($buildDir);
+				exec('rm -rf .git*');
+				exec('rm -rf .sass-cache');		
 			
-		}, 
+			}, 
 		
-		'minify javascript'=>function($jaime){
+			'minify javascript'=>function($jaime){
 			
-			$buildDir = $jaime->remember('build');
-			$appJs = $buildDir.'/themes/today/assets/js/app.js';
-			$miniAppJs = $buildDir.'/themes/today/assets/js/app.min.js';
+				$buildDir = $jaime->remember('build');
+				$appJs = $buildDir.'/themes/today/assets/js/app.js';
+				$miniAppJs = $buildDir.'/themes/today/assets/js/app.min.js';
 
-			// obviously you need to download YUICompressor first,
-			$compressor  = dirname(__FILE__)."/yui/yuicompressor-2.4.2.jar";
+				// obviously you need to download YUICompressor first,
+				$compressor  = dirname(__FILE__)."/yui/yuicompressor-2.4.2.jar";
 
-			echo exec("java -jar $compressor -o $miniAppJs $appJs");
+				echo exec("java -jar $compressor -o $miniAppJs $appJs");
 
-		},		
+			},		
 		
-	));
+		));
+	
+		$jaime->work();
+	
 	?>
 	
 
